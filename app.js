@@ -7,21 +7,16 @@ let url =
     : process.env.MONGODB_URI;
 
 async function connect(app) {
-  console.log("Connecting to " + process.env.MONGODB_URI);
-
   const mongoose = require("mongoose");
   const connection = await mongoose.connect(url, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: process.env.NODE_ENV || "dev" ? true : false
   });
 
   app.db = connection;
   app.models = {};
 
-  console.log("Antes do usuário");
   app.models.User = userModel(app);
-
-  console.log(app.models.User);
 }
 
 var express = require("express");
