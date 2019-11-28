@@ -8,7 +8,7 @@ var dotenv = require("dotenv");
 
 let parsed = {};
 
-if (process.env.NODE_ENV === "dev") {
+if ((process.env.NODE_ENV || "dev") === "dev") {
   const data = dotenv.config();
   parsed = data.parsed;
 } else {
