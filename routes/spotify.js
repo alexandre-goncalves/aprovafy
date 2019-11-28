@@ -6,8 +6,14 @@ var superagent = require("superagent");
 var _ = require("lodash");
 var dotenv = require("dotenv");
 
-const data = dotenv.config();
-const parsed = data.parsed;
+let parsed = {};
+
+if (process.env.NODE_ENV === "dev") {
+  const data = dotenv.config();
+  parsed = data.parsed;
+} else {
+  parsed = process.env;
+}
 
 const clientId = parsed.CLIENT_ID;
 const clientSecret = parsed.CLIENT_SECRET;
