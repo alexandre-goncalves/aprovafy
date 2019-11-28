@@ -7,6 +7,7 @@ let url =
     : process.env.MONGODB_URI;
 
 async function connect(app) {
+  console.log("Environment " + process.env.NODE_ENV || "dev");
   console.log("Connecting to " + url);
 
   const mongoose = require("mongoose");
