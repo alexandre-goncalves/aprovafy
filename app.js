@@ -7,6 +7,7 @@ let url =
     : process.env.MONGODB_URI;
 
 async function connect(app) {
+  console.log("Connecting ...");
   const mongoose = require("mongoose");
   const connection = await mongoose.connect(url, {
     useNewUrlParser: true,
@@ -16,7 +17,10 @@ async function connect(app) {
   app.db = connection;
   app.models = {};
 
+  console.log("Antes do usuário");
   app.models.User = userModel(app);
+
+  console.log(app.models.User);
 }
 
 var express = require("express");
