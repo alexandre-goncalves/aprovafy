@@ -7,11 +7,15 @@ let url =
     : process.env.MONGODB_URI;
 
 async function connect(app) {
+  console.log("Connecting to " + url);
+
   const mongoose = require("mongoose");
   const connection = await mongoose.connect(url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: process.env.NODE_ENV || "dev" ? true : false
+    useNewUrlParser: true
+    // useUnifiedTopology: process.env.NODE_ENV || "dev" ? true : false
   });
+
+  console.log("Connected");
 
   app.db = connection;
   app.models = {};
