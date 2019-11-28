@@ -7,7 +7,8 @@ let url =
     : process.env.MONGODB_URI;
 
 async function connect(app) {
-  console.log("Connecting ...");
+  console.log("Connecting to " + process.env.MONGODB_URI);
+
   const mongoose = require("mongoose");
   const connection = await mongoose.connect(url, {
     useNewUrlParser: true,
