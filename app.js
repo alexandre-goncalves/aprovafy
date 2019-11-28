@@ -2,7 +2,7 @@ let secretKey = "secret";
 
 const userModel = require("./models/user");
 let url =
-  process.env.NODE_ENV || "dev"
+  (process.env.NODE_ENV || "dev") === "dev"
     ? "mongodb://localhost:27017/aprovafy"
     : process.env.MONGODB_URI;
 
@@ -12,8 +12,8 @@ async function connect(app) {
 
   const mongoose = require("mongoose");
   const connection = await mongoose.connect(url, {
-    useNewUrlParser: true
-    // useUnifiedTopology: process.env.NODE_ENV || "dev" ? true : false
+    useNewUrlParser: true,
+    useUnifiedTopology: (process.env.NODE_ENV || "dev") === "dev" ? true : false
   });
 
   console.log("Connected");
