@@ -65,21 +65,62 @@ router.get("/", async function(req, res, next) {
   });
 });
 
+router.get("/:id", async function(req, res, next) {
+  const app = global.app;
+
+  const user = await app.models.User.findOne({ _id: req.params.id });
+
+  res.json({
+    user: {
+      email: user.email,
+      aprovafyId: user.aprovafyId,
+      aprovafyUri: user.aprovafyUri
+    },
+    ok: true
+  });
+});
+
 router.post("/", async function(req, res, next) {
   const app = global.app;
 
   var now = new Date();
   const password = encrypt(req.body.password, now);
-  console.log(app.models);
 
   const user = new app.models.User({
     email: req.body.email,
     createdAt: now,
     updatedAt: now,
-    password: password
+    password: password,
+    aprovafyUri: req.body.aprovafyUri,
+    aprovafyId: req.body.aprovafyId
   });
 
   await user.save();
+
+  res.json({ ok: true });
+});
+
+router.post("/:id", async function(req, res, next) {
+  const app = global.app;
+
+  var now = new Date();
+
+  const user = await app.models.User.findOne({ _id: req.params.id });
+
+  const password = encrypt(req.body.password, user.createdAt);
+
+  await app.models.User.updateOne(
+    { _id: req.params.id },
+    {
+      $set: {
+        email: req.body.email,
+        updatedAt: now,
+        password: password,
+        aprovafyId: req.body.aprovafyId,
+        aprovafyUri: req.body.aprovafyUri
+      }
+    }
+  );
 
   res.json({ ok: true });
 });

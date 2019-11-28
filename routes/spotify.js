@@ -20,9 +20,6 @@ const clientSecret = parsed.CLIENT_SECRET;
 const uri = parsed.URI;
 const minutesInWorkDay = parsed.MINUTE_IN_WORK_DAY;
 
-let aprovafyId = parsed.TO_ID;
-let aprovafyUri = parsed.TO_URI;
-
 router.post("/generate", async function(req, res, next) {
   const app = global.app;
 
@@ -31,6 +28,9 @@ router.post("/generate", async function(req, res, next) {
   });
 
   if (user) {
+    let aprovafyId = user.aprovafyId;
+    let aprovafyUri = user.aprovafyUri;
+
     const spo = initSpotify(user);
     const usersAvailable = req.body.users;
     try {
@@ -116,6 +116,7 @@ router.get("/now-playing/", async function(req, res, next) {
     const spo = initSpotify(user);
     try {
       const nowPlaying = await spo.getMyCurrentPlayingTrack();
+
       const total = nowPlaying.body.item.duration_ms;
       const progress = nowPlaying.body.progress_ms;
 
@@ -147,8 +148,8 @@ router.get("/aprovafy/", async function(req, res, next) {
   if (user) {
     const spo = initSpotify(user);
     try {
-      const playlist = await spo.getPlaylist(aprovafyId);
-      const songs = await getAllTracksFromPlaylist(aprovafyId, spo);
+      const playlist = await spo.getPlaylist(user.aprovafyId);
+      const songs = await getAllTracksFromPlaylist(user.aprovafyId, spo);
 
       playlist.body.tracks = songs;
 

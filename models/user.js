@@ -6,7 +6,9 @@ module.exports = function(app) {
     updatedAt: Date,
     token: String,
     spotifyToken: String,
-    refreshToken: String
+    refreshToken: String,
+    aprovafyId: String,
+    aprovafyUri: String
   });
 
   return User;
