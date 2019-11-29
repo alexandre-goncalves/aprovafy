@@ -86,7 +86,13 @@ router.post("/generate", async function(req, res, next) {
       }
 
       const devices = await spo.getMyDevices();
-      const myDevice = devices.body.devices[0];
+      const myDevice = _.first(
+        _.filter(devices.body.devices, d => d.is_active)
+      );
+
+      if (!myDevice) {
+        throw new Error("Sem device");
+      }
 
       await spo.play({
         device_id: myDevice.id,
@@ -202,14 +208,28 @@ router.get("/playlists", async function(req, res, next) {
   if (user) {
     const spo = initSpotify(user);
     try {
-      const playlists = await spo.getUserPlaylists({
-        limit: 50,
-        offset: 0
-      });
+      let hasPlaylsits = true;
+      let allPlaylists = [];
+      let page = 1;
 
-      playlists.body.items = _.sortBy(playlists.body.items, i => i.name);
+      while (hasPlaylsits) {
+        const playlists = await spo.getUserPlaylists({
+          limit: 50,
+          offset: page === 1 ? 0 : (page - 1) * 50
+        });
 
-      res.send({ ok: true, playlists: playlists.body.items });
+        allPlaylists = [...allPlaylists, ...playlists.body.items];
+
+        page++;
+
+        if (!playlists.body.items || !playlists.body.items.length) {
+          hasPlaylsits = false;
+        }
+      }
+
+      allPlaylists = _.sortBy(allPlaylists, i => i.name);
+
+      res.send({ ok: true, playlists: allPlaylists });
     } catch (error) {
       console.error(error);
       res.status(400);
